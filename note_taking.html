@@ -26,7 +26,13 @@
             if (cues.length > 10) {
                 feedbackText += '✅ Good cues section - you have questions/keywords<br>';
                 score++;
-            } else {
+            }
+
+        function backToExplore() {
+            hideAllSections();
+            document.querySelector('.explore-section').style.display = 'block';
+            document.querySelector('.explore-section').classList.add('active');
+        } else {
                 feedbackText += '❗ Try adding more cues/questions in the left column<br>';
             }
             
@@ -263,6 +269,86 @@ III. Hydroelectric Power
             
             if (notes) notes.value = '';
             if (feedback) feedback.style.display = 'none';
+        }
+
+        // Quiz data and state
+        function clearSketchCanvas() {
+            const canvas = document.getElementById('sketchCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Reset background
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function addSketchSymbol(symbol) {
+            const canvas = document.getElementById('sketchCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.font = '24px Arial';
+            ctx.fillStyle = '#333333';
+            
+            // Add symbol at a random position
+            const x = Math.random() * (canvas.width - 50) + 25;
+            const y = Math.random() * (canvas.height - 50) + 25;
+            
+            ctx.fillText(symbol, x, y);
+        }
+
+        function addSketchText() {
+            const canvas = document.getElementById('sketchCanvas');
+            const textInput = document.getElementById('sketchTextInput');
+            if (!canvas || !textInput) return;
+            
+            const text = textInput.value.trim();
+            if (!text) {
+                alert('Please enter some text first');
+                return;
+            }
+            
+            const ctx = canvas.getContext('2d');
+            ctx.font = '16px Arial';
+            ctx.fillStyle = '#333333';
+            
+            // Add text at center-ish position
+            const x = canvas.width / 2 - (text.length * 4);
+            const y = canvas.height / 2;
+            
+            ctx.fillText(text, x, y);
+            textInput.value = '';
+        }
+
+        function downloadSketch() {
+            const canvas = document.getElementById('sketchCanvas');
+            if (!canvas) return;
+            
+            // Create download link
+            const link = document.createElement('a');
+            link.download = 'my-sketchnote.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        function provideSketchingTips() {
+            const feedback = document.getElementById('sketchingFeedback');
+            if (!feedback) return;
+            
+            const tips = [
+                "🎨 Use simple shapes - circles, squares, arrows work great!",
+                "✏️ Don't worry about perfect drawing - function over form!",
+                "🔤 Mix text sizes - big for main ideas, small for details",
+                "🎯 Use arrows to show connections and flow",
+                "📦 Box important concepts to make them stand out",
+                "🌟 Add icons and symbols to represent ideas quickly"
+            ];
+            
+            const randomTip = tips[Math.floor(Math.random() * tips.length)];
+            feedback.innerHTML = `<strong>💡 Sketchnoting Tip:</strong><br>${randomTip}`;
+            feedback.style.display = 'block';
         }
 
         body {
@@ -789,6 +875,17 @@ III. Hydroelectric Power
                         </div>
                         <button class="btn method-btn" onclick="tryMethod('sentence')">Try Sentence Method</button>
                     </div>
+
+                    <div class="method-preview">
+                        <div class="method-icon">🎨</div>
+                        <h3>Sketchnoting</h3>
+                        <p>Visual note-taking combining text with drawings, symbols, and diagrams. Research-proven to enhance memory and engagement.</p>
+                        <div class="method-tags">
+                            <span class="tag">Visual</span>
+                            <span class="tag">Memory Boost</span>
+                        </div>
+                        <button class="btn method-btn" onclick="tryMethod('sketchnoting')">Try Sketchnoting</button>
+                    </div>
                 </div>
 
                 <div style="text-align: center; margin-top: 30px;">
@@ -848,8 +945,117 @@ III. Hydroelectric Power
     </div>
 
     <script>
-        // Global interactive functions - defined first for HTML onclick access
-        
+        // Navigation and utility functions - defined first for immediate access
+        function hideAllSections() {
+            const sections = ['.intro-section', '.quiz-section', '.results-section', '.walkthrough-section', '.explore-section'];
+            sections.forEach(section => {
+                const element = document.querySelector(section);
+                if (element) {
+                    element.style.display = 'none';
+                    element.classList.remove('active');
+                }
+            });
+        }
+
+        function backToExplore() {
+            hideAllSections();
+            document.querySelector('.explore-section').style.display = 'block';
+            document.querySelector('.explore-section').classList.add('active');
+        }
+
+        function backToIntro() {
+            hideAllSections();
+            document.querySelector('.intro-section').style.display = 'block';
+        }
+
+        function exploreAllMethods() {
+            hideAllSections();
+            document.querySelector('.explore-section').style.display = 'block';
+            document.querySelector('.explore-section').classList.add('active');
+        }
+
+        // Interactive functions for walkthroughs - ALL must be global for onclick access
+
+        // Sketchnoting Functions
+        function provideSketchingTips() {
+            const feedback = document.getElementById('sketchingFeedback');
+            if (!feedback) return;
+            
+            const tips = [
+                "🎨 Use simple shapes - circles, squares, arrows work great!",
+                "✏️ Don't worry about perfect drawing - function over form!",
+                "🔤 Mix text sizes - big for main ideas, small for details",
+                "🎯 Use arrows to show connections and flow",
+                "📦 Box important concepts to make them stand out",
+                "🌟 Add icons and symbols to represent ideas quickly"
+            ];
+            
+            const randomTip = tips[Math.floor(Math.random() * tips.length)];
+            feedback.innerHTML = `<strong>💡 Sketchnoting Tip:</strong><br>${randomTip}`;
+            feedback.style.display = 'block';
+        }
+
+        function clearSketchCanvas() {
+            const canvas = document.getElementById('sketchCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Reset background
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function addSketchSymbol(symbol) {
+            const canvas = document.getElementById('sketchCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.font = '24px Arial';
+            ctx.fillStyle = '#333333';
+            
+            // Add symbol at a random position
+            const x = Math.random() * (canvas.width - 50) + 25;
+            const y = Math.random() * (canvas.height - 50) + 25;
+            
+            ctx.fillText(symbol, x, y);
+        }
+
+        function addSketchText() {
+            const canvas = document.getElementById('sketchCanvas');
+            const textInput = document.getElementById('sketchTextInput');
+            if (!canvas || !textInput) return;
+            
+            const text = textInput.value.trim();
+            if (!text) {
+                alert('Please enter some text first');
+                return;
+            }
+            
+            const ctx = canvas.getContext('2d');
+            ctx.font = '16px Arial';
+            ctx.fillStyle = '#333333';
+            
+            // Add text at center-ish position
+            const x = canvas.width / 2 - (text.length * 4);
+            const y = canvas.height / 2;
+            
+            ctx.fillText(text, x, y);
+            textInput.value = '';
+        }
+
+        function downloadSketch() {
+            const canvas = document.getElementById('sketchCanvas');
+            if (!canvas) return;
+            
+            // Create download link
+            const link = document.createElement('a');
+            link.download = 'my-sketchnote.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
         // Cornell Note Functions
         function provideCornellFeedback() {
             const cues = document.getElementById('cornellCues')?.value.trim() || '';
@@ -1161,13 +1367,23 @@ III. Hydroelectric Power
                 ]
             },
             {
+                id: 'creative_expression',
+                question: "When explaining ideas to others, you prefer to:",
+                options: [
+                    { text: "Draw diagrams and sketch concepts", value: 'visual_creative' },
+                    { text: "Use clear logical explanations", value: 'logical' },
+                    { text: "Tell stories and use examples", value: 'narrative' },
+                    { text: "Present organized facts and data", value: 'factual' }
+                ]
+            },
+            {
                 id: 'challenge',
                 question: "What's your biggest note-taking challenge?",
                 options: [
                     { text: "Keeping up with fast-paced lectures", value: 'speed' },
                     { text: "Organizing information logically", value: 'organization' },
                     { text: "Remembering what I wrote later", value: 'memory' },
-                    { text: "Connecting ideas across topics", value: 'connections' }
+                    { text: "Staying engaged with boring content", value: 'engagement' }
                 ]
             },
             {
@@ -1222,6 +1438,14 @@ III. Hydroelectric Power
                 pros: ["Very fast", "Captures lots of detail", "Simple to use", "Good for unpredictable lectures"],
                 cons: ["Can be overwhelming to review", "Lacks clear organization", "Hard to identify key points"],
                 bestFor: "Fast-paced lectures and when you need to capture maximum information"
+            },
+            sketchnoting: {
+                name: "Sketchnoting Method",
+                description: "Visual note-taking combining text, drawings, symbols, and diagrams for enhanced memory",
+                details: "Sketchnoting combines traditional text notes with visual elements like drawings, icons, arrows, and layouts. Research shows that adding visual elements significantly improves memory and understanding.",
+                pros: ["Enhances memory retention", "Makes boring content engaging", "Develops visual thinking", "Great for presentations"],
+                cons: ["Takes practice to develop", "May be slower initially", "Not ideal for pure text lectures"],
+                bestFor: "Visual learners, creative subjects, and anyone wanting to improve memory retention"
             }
         };
 
@@ -1247,12 +1471,6 @@ III. Hydroelectric Power
             displayQuestion();
         }
 
-        function exploreAllMethods() {
-            hideAllSections();
-            document.querySelector('.explore-section').style.display = 'block';
-            document.querySelector('.explore-section').classList.add('active');
-        }
-
         function tryMethod(methodName) {
             // Set the recommended method and go directly to walkthrough
             recommendedMethod = methodName;
@@ -1260,13 +1478,21 @@ III. Hydroelectric Power
             document.querySelector('.walkthrough-section').style.display = 'block';
             document.querySelector('.walkthrough-section').classList.add('active');
 
+            // Debug: Check if function exists
+            console.log('Trying method:', methodName);
+            console.log('createSketchnotingWalkthrough exists:', typeof createSketchnotingWalkthrough);
+
             const walkthroughs = {
                 cornell: createCornellWalkthrough,
                 outline: createOutlineWalkthrough,
                 mapping: createMappingWalkthrough,
                 charting: createChartingWalkthrough,
-                sentence: createSentenceWalkthrough
+                sentence: createSentenceWalkthrough,
+                sketchnoting: createSketchnotingWalkthrough
             };
+
+            console.log('Walkthroughs object:', walkthroughs);
+            console.log('Selected function:', walkthroughs[methodName]);
 
             const titleElement = document.getElementById('walkthroughTitle');
             const contentElement = document.getElementById('walkthroughContent');
@@ -1275,30 +1501,21 @@ III. Hydroelectric Power
                 titleElement.textContent = `${noteMethods[methodName].name} - Interactive Practice`;
             }
             
-            if (contentElement) {
+            if (contentElement && walkthroughs[methodName]) {
                 contentElement.innerHTML = walkthroughs[methodName]();
+            } else {
+                console.error('Missing walkthrough function for:', methodName);
             }
 
             // Set up mind map interactivity if this is the mapping method
             if (methodName === 'mapping') {
-                setTimeout(setupMindMapInteractivity, 100);
+                setTimeout(setupMindMapInteractivity, 500); // Increased timeout
             }
-        }
 
-        function backToIntro() {
-            hideAllSections();
-            document.querySelector('.intro-section').style.display = 'block';
-        }
-
-        function hideAllSections() {
-            const sections = ['.intro-section', '.quiz-section', '.results-section', '.walkthrough-section', '.explore-section'];
-            sections.forEach(section => {
-                const element = document.querySelector(section);
-                if (element) {
-                    element.style.display = 'none';
-                    element.classList.remove('active');
-                }
-            });
+            // Set up sketchnoting canvas if this is the sketchnoting method
+            if (methodName === 'sketchnoting') {
+                setTimeout(setupSketchingCanvas, 500); // Increased timeout
+            }
         }
 
         function displayQuestion() {
@@ -1390,38 +1607,47 @@ III. Hydroelectric Power
                 outline: 0,
                 mapping: 0,
                 charting: 0,
-                sentence: 0
+                sentence: 0,
+                sketchnoting: 0
             };
 
             // Scoring logic based on answers
             if (answers.memory_style === 'structured') scores.cornell += 2, scores.outline += 2;
-            if (answers.memory_style === 'visual') scores.mapping += 3;
+            if (answers.memory_style === 'visual') scores.mapping += 3, scores.sketchnoting += 2;
             if (answers.memory_style === 'written') scores.cornell += 1, scores.sentence += 1;
-            if (answers.memory_style === 'conceptual') scores.mapping += 2;
+            if (answers.memory_style === 'conceptual') scores.mapping += 2, scores.sketchnoting += 3;
 
-            if (answers.info_type === 'complex') scores.mapping += 3;
+            if (answers.info_type === 'complex') scores.mapping += 3, scores.sketchnoting += 2;
             if (answers.info_type === 'sequential') scores.outline += 3;
             if (answers.info_type === 'facts') scores.charting += 2, scores.cornell += 1;
             if (answers.info_type === 'comparative') scores.charting += 3;
 
             if (answers.time_pressure === 'fast') scores.sentence += 3;
-            if (answers.time_pressure === 'detailed') scores.cornell += 2, scores.mapping += 1;
-            if (answers.time_pressure === 'moderate') scores.outline += 2;
+            if (answers.time_pressure === 'detailed') scores.cornell += 2, scores.mapping += 1, scores.sketchnoting += 2;
+            if (answers.time_pressure === 'moderate') scores.outline += 2, scores.sketchnoting += 1;
 
             if (answers.review_style === 'scan') scores.outline += 2, scores.charting += 1;
             if (answers.review_style === 'systematic') scores.cornell += 3;
             if (answers.review_style === 'testing') scores.cornell += 2;
-            if (answers.review_style === 'patterns') scores.mapping += 3;
+            if (answers.review_style === 'patterns') scores.mapping += 3, scores.sketchnoting += 2;
 
-            if (answers.visual_preference === 'visual') scores.mapping += 3;
+            if (answers.visual_preference === 'visual') scores.mapping += 3, scores.sketchnoting += 3;
             if (answers.visual_preference === 'outline') scores.outline += 3;
             if (answers.visual_preference === 'written') scores.sentence += 2, scores.cornell += 1;
             if (answers.visual_preference === 'charts') scores.charting += 3;
 
+            if (answers.creative_expression === 'visual_creative') scores.sketchnoting += 4;
+            if (answers.creative_expression === 'logical') scores.outline += 2, scores.cornell += 1;
+            if (answers.creative_expression === 'narrative') scores.mapping += 2, scores.sketchnoting += 1;
+            if (answers.creative_expression === 'factual') scores.charting += 2, scores.sentence += 1;
+
             if (answers.challenge === 'speed') scores.sentence += 2;
             if (answers.challenge === 'organization') scores.cornell += 2, scores.outline += 2;
-            if (answers.challenge === 'memory') scores.cornell += 3;
-            if (answers.challenge === 'connections') scores.mapping += 3;
+            if (answers.challenge === 'memory') scores.cornell += 3, scores.sketchnoting += 3;
+            if (answers.challenge === 'engagement') scores.sketchnoting += 4;
+
+            if (answers.digital_comfort === 'digital') scores.sketchnoting += 1;
+            if (answers.digital_comfort === 'paper') scores.sketchnoting += 2; // Hand-drawn sketches
 
             // Find highest scoring method
             return Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
@@ -1497,7 +1723,9 @@ III. Hydroelectric Power
             const newNodeInput = document.getElementById('newNodeText');
             
             if (canvas) {
+                // Canvas click to add nodes
                 canvas.addEventListener('click', function(e) {
+                    // Only add node if clicking on the canvas itself, not on existing nodes
                     if (e.target === canvas) {
                         const rect = canvas.getBoundingClientRect();
                         const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -1505,8 +1733,15 @@ III. Hydroelectric Power
                         
                         const text = prompt('Enter text for the new node:');
                         if (text && text.trim()) {
-                            addMindMapNode(text.trim(), x, y);
+                            addMindMapNode(text.trim(), x, y, null);
                         }
+                    }
+                });
+
+                // Prevent context menu on canvas itself
+                canvas.addEventListener('contextmenu', function(e) {
+                    if (e.target === canvas) {
+                        e.preventDefault();
                     }
                 });
             }
@@ -1517,6 +1752,24 @@ III. Hydroelectric Power
                         addMindMapNode();
                     }
                 });
+            }
+
+            // Set up context menu for the central topic
+            const centralTopic = document.getElementById('centralTopic');
+            if (centralTopic) {
+                centralTopic.addEventListener('contextmenu', showNodeContextMenu);
+                // Give the central topic a node ID
+                centralTopic.dataset.nodeId = '0';
+                // Add to mindMapNodes array
+                if (!mindMapNodes.find(n => n.id === 0)) {
+                    mindMapNodes.push({
+                        id: 0,
+                        element: centralTopic,
+                        text: 'Climate Change',
+                        parentId: null,
+                        children: []
+                    });
+                }
             }
         }
 
@@ -1634,22 +1887,22 @@ III. Hydroelectric Power
             return `
                 <div class="step">
                     <span class="step-number">1</span>
-                    <strong>Central topic:</strong> Write the main topic in the center of your page and circle it.
+                    <strong>Central topic:</strong> Start with the main topic in the center of your page and circle it.
                 </div>
 
                 <div class="step">
                     <span class="step-number">2</span>
-                    <strong>Main branches:</strong> Draw lines radiating outward and write major subtopics at the end of each line.
+                    <strong>Main branches:</strong> Add major subtopics around the center. Use the input box or click on the canvas.
                 </div>
 
                 <div class="step">
                     <span class="step-number">3</span>
-                    <strong>Sub-branches:</strong> Add smaller branches with supporting details, examples, and connections.
+                    <strong>Sub-branches:</strong> Right-click any node to add sub-topics. Create hierarchical connections between related ideas.
                 </div>
 
                 <div class="step">
                     <span class="step-number">4</span>
-                    <strong>Use colors and symbols:</strong> Make it visual with different colors for different themes and symbols for different types of information.
+                    <strong>Organize visually:</strong> Drag nodes to arrange them logically. Use colors and visual flow to show relationships.
                 </div>
 
                 <div class="visual-example">
@@ -1659,36 +1912,50 @@ III. Hydroelectric Power
                         </div>
                         <div style="margin: 20px 0;">
                             <div style="display: inline-block; margin: 0 30px;">
-                                ↗ <span style="background: #fef3c7; padding: 5px; border-radius: 15px;">Subtopic A</span><br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;→ Detail 1<br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;→ Detail 2
+                                ↗ <span style="background: #fef3c7; padding: 5px; border-radius: 15px; font-weight: bold;">Main Branch A</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;→ <span style="background: #f3f4f6; padding: 3px 8px; border-radius: 10px; font-size: 0.9em;">Sub-topic 1</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;→ <span style="background: #f3f4f6; padding: 3px 8px; border-radius: 10px; font-size: 0.9em;">Sub-topic 2</span>
                             </div>
                             <div style="display: inline-block; margin: 0 30px;">
-                                ↖ <span style="background: #dcfce7; padding: 5px; border-radius: 15px;">Subtopic B</span><br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;→ Example<br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;→ Connection
+                                ↖ <span style="background: #dcfce7; padding: 5px; border-radius: 15px; font-weight: bold;">Main Branch B</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;→ <span style="background: #f3f4f6; padding: 3px 8px; border-radius: 10px; font-size: 0.9em;">Detail 1</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;→ <span style="background: #f3f4f6; padding: 3px 8px; border-radius: 10px; font-size: 0.9em;">Detail 2</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="interactive-demo">
-                    <h4>Create your own mind map:</h4>
-                    <p>Make a mind map about "Climate Change"</p>
+                    <h4>Create your hierarchical mind map about "Climate Change":</h4>
                     <div style="background: #f0f9ff; padding: 15px; border-radius: 8px; margin: 10px 0;">
-                        <strong>Topics to include:</strong> Causes (fossil fuels, deforestation), Effects (rising temperatures, sea level rise), Solutions (renewable energy, conservation)
+                        <strong>Instructions:</strong><br>
+                        <strong>📝 Add Main Topics:</strong> Type "Causes", "Effects", "Solutions" and click "Add Node"<br>
+                        <strong>🖱️ Click to Place:</strong> Click anywhere on canvas to add a node at that spot<br>
+                        <strong>🖱️ Right-Click for Sub-nodes:</strong> Right-click any node → "Add Sub-Node" for hierarchical structure<br>
+                        <strong>✋ Drag to Organize:</strong> Click and drag nodes to arrange them visually<br>
+                        <strong>❌ Delete Nodes:</strong> Right-click → "Delete Node" (this also removes all sub-nodes)
                     </div>
-                    <div id="mindMapCanvas" style="border: 2px dashed #d1d5db; border-radius: 8px; height: 300px; background: white; position: relative; cursor: crosshair;">
-                        <div id="centralTopic" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #dbeafe; padding: 10px 15px; border-radius: 20px; border: 2px solid #4f46e5; font-weight: bold; cursor: move;">
-                            Climate Change
-                        </div>
-                    </div>
-                    <div style="margin: 10px 0;">
-                        <input type="text" id="newNodeText" placeholder="Type a subtopic (e.g., 'Causes', 'Effects', 'Solutions')" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; margin-right: 10px; width: 250px;">
+                    
+                    <div style="margin: 15px 0;">
+                        <input type="text" id="newNodeText" placeholder="Type a main topic (e.g., 'Causes', 'Effects', 'Solutions')" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; margin-right: 10px; width: 300px;">
                         <button onclick="addMindMapNode()" style="padding: 8px 15px; background: #4f46e5; color: white; border: none; border-radius: 4px; cursor: pointer;">Add Node</button>
                         <button onclick="clearMindMap()" style="padding: 8px 15px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;">Clear All</button>
                     </div>
-                    <p style="margin-top: 10px; font-size: 0.9em; color: #6b7280;">💡 Click anywhere on the canvas to add a node, or type in the box above. Drag nodes to move them around!</p>
+
+                    <div id="mindMapCanvas" style="border: 2px dashed #d1d5db; border-radius: 8px; height: 350px; background: white; position: relative; cursor: crosshair;">
+                        <div id="centralTopic" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #dbeafe; padding: 12px 18px; border-radius: 20px; border: 3px solid #4f46e5; font-weight: bold; cursor: move; font-size: 1.1em;">
+                            Climate Change
+                        </div>
+                    </div>
+
+                    <div style="margin: 15px 0; padding: 15px; background: #fffbeb; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                        <strong>💡 Hierarchical Mind Mapping Tips:</strong><br>
+                        • <strong>Main branches</strong> are colored and bold (connected to center)<br>
+                        • <strong>Sub-nodes</strong> are gray and smaller (connected to their parent)<br>
+                        • <strong>Lines show relationships:</strong> solid for main, dashed for sub-connections<br>
+                        • <strong>Try this structure:</strong> Causes → Fossil Fuels → Coal, Oil, Gas<br>
+                        • <strong>Keep it visual:</strong> Arrange related concepts close together
+                    </div>
                 </div>
             `;
         }
@@ -1819,6 +2086,71 @@ III. Hydroelectric Power
             `;
         }
 
+        function createSketchnotingWalkthrough() {
+            return `
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Start with structure:</strong> Create a basic layout using headings, boxes, or sections to organize your content.
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Add key text:</strong> Write main ideas and important facts in different text sizes - bigger for main concepts.
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Draw simple visuals:</strong> Add basic shapes, icons, arrows, and symbols to represent concepts visually.
+                </div>
+
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Connect ideas:</strong> Use arrows, lines, and visual flow to show relationships between concepts.
+                </div>
+
+                <div class="visual-example">
+                    <strong>Sketchnoting Elements:</strong><br><br>
+                    📚 <strong>Books/Learning</strong> → Use book icons<br>
+                    💡 <strong>Ideas</strong> → Lightbulb symbols<br>
+                    ⭐ <strong>Important</strong> → Stars or emphasis<br>
+                    ➡️ <strong>Process</strong> → Arrows and flow<br>
+                    📊 <strong>Data</strong> → Simple charts/graphs<br>
+                    ❓ <strong>Questions</strong> → Question marks in bubbles<br>
+                    ✅ <strong>Key Points</strong> → Checkmarks or boxes
+                </div>
+
+                <div class="interactive-demo">
+                    <h4>Try sketchnoting about "The Water Cycle":</h4>
+                    <p>Create a visual sketch combining text and drawings to explain the water cycle process.</p>
+                    
+                    <div style="margin: 15px 0;">
+                        <input type="text" id="sketchTextInput" placeholder="Type text to add to your sketch..." style="padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; margin-right: 10px; width: 250px;">
+                        <button onclick="addSketchText()" class="btn" style="font-size: 0.9em; padding: 8px 15px;">Add Text</button>
+                    </div>
+
+                    <div style="margin: 15px 0;">
+                        <strong>Quick Symbols:</strong>
+                        <button onclick="addSketchSymbol('☀️')" style="margin: 2px; padding: 5px 8px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer;">☀️</button>
+                        <button onclick="addSketchSymbol('☁️')" style="margin: 2px; padding: 5px 8px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer;">☁️</button>
+                        <button onclick="addSketchSymbol('🌊')" style="margin: 2px; padding: 5px 8px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer;">🌊</button>
+                        <button onclick="addSketchSymbol('💧')" style="margin: 2px; padding: 5px 8px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer;">💧</button>
+                        <button onclick="addSketchSymbol('➡️')" style="margin: 2px; padding: 5px 8px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer;">➡️</button>
+                        <button onclick="addSketchSymbol('⬆️')" style="margin: 2px; padding: 5px 8px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer;">⬆️</button>
+                        <button onclick="addSketchSymbol('⬇️')" style="margin: 2px; padding: 5px 8px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer;">⬇️</button>
+                    </div>
+
+                    <canvas id="sketchCanvas" width="600" height="400" style="border: 2px solid #d1d5db; border-radius: 8px; background: white; display: block; margin: 15px 0; cursor: crosshair;"></canvas>
+
+                    <div style="margin-top: 10px;">
+                        <button onclick="provideSketchingTips()" class="btn" style="font-size: 0.9em; padding: 8px 15px;">Get Tips</button>
+                        <button onclick="clearSketchCanvas()" class="btn btn-secondary" style="font-size: 0.9em; padding: 8px 15px;">Clear Canvas</button>
+                        <button onclick="downloadSketch()" class="btn btn-secondary" style="font-size: 0.9em; padding: 8px 15px;">Download</button>
+                    </div>
+                    <div id="sketchingFeedback" style="margin-top: 10px; padding: 10px; background: #f0f9ff; border-radius: 6px; display: none;"></div>
+                </div>
+            `;
+        }
+
         function backToResults() {
             document.querySelector('.walkthrough-section').style.display = 'none';
             document.querySelector('.walkthrough-section').classList.remove('active');
@@ -1830,14 +2162,14 @@ III. Hydroelectric Power
             startQuiz(); // Use the improved startQuiz function
         }
 
-        // Mind map functionality
+        // Mind map functionality with hierarchical support
         let mindMapNodes = [];
         let nodeCounter = 0;
         let isDragging = false;
         let currentDragNode = null;
         let dragOffset = { x: 0, y: 0 };
 
-        function addMindMapNode(text = null, x = null, y = null) {
+        function addMindMapNode(text = null, x = null, y = null, parentId = null) {
             const canvas = document.getElementById('mindMapCanvas');
             if (!canvas) return;
 
@@ -1849,40 +2181,82 @@ III. Hydroelectric Power
 
             nodeCounter++;
             const colors = ['#fef3c7', '#dcfce7', '#fce7f3', '#e0e7ff', '#fed7d7'];
-            const color = colors[nodeCounter % colors.length];
+            const isSubNode = parentId !== null;
+            const color = isSubNode ? '#f3f4f6' : colors[nodeCounter % colors.length]; // Gray for sub-nodes
 
-            // Position nodes around the center if coordinates not provided
+            // Position nodes around the center or parent if coordinates not provided
             if (x === null || y === null) {
-                const angle = (nodeCounter * 60) * (Math.PI / 180); // 60 degrees apart
-                const radius = 80 + (nodeCounter * 10); // Spiral outward
-                x = 50 + Math.cos(angle) * radius; // 50% center + offset
-                y = 50 + Math.sin(angle) * radius;
+                if (parentId) {
+                    // Position near parent node
+                    const parent = mindMapNodes.find(n => n.id === parentId);
+                    if (parent) {
+                        const parentRect = parent.element.getBoundingClientRect();
+                        const canvasRect = canvas.getBoundingClientRect();
+                        const angle = Math.random() * 2 * Math.PI;
+                        const radius = 60 + (Math.random() * 40); // 60-100px from parent
+                        x = ((parentRect.left + parentRect.width/2 - canvasRect.left) / canvasRect.width) * 100 + Math.cos(angle) * (radius / canvasRect.width) * 100;
+                        y = ((parentRect.top + parentRect.height/2 - canvasRect.top) / canvasRect.height) * 100 + Math.sin(angle) * (radius / canvasRect.height) * 100;
+                    }
+                } else {
+                    // Position around center for main nodes
+                    const angle = (nodeCounter * 60) * (Math.PI / 180);
+                    const radius = 80 + (nodeCounter * 10);
+                    x = 50 + Math.cos(angle) * radius;
+                    y = 50 + Math.sin(angle) * radius;
+                }
             }
+
+            // Keep within bounds
+            x = Math.max(10, Math.min(90, x));
+            y = Math.max(10, Math.min(90, y));
 
             const node = document.createElement('div');
             node.className = 'mind-map-node';
+            const fontSize = isSubNode ? '0.8em' : '0.9em';
+            const padding = isSubNode ? '6px 10px' : '8px 12px';
+            
             node.style.cssText = `
                 position: absolute;
                 left: ${x}%;
                 top: ${y}%;
                 transform: translate(-50%, -50%);
                 background: ${color};
-                padding: 8px 12px;
+                padding: ${padding};
                 border-radius: 15px;
-                border: 2px solid #6b7280;
+                border: 2px solid ${isSubNode ? '#9ca3af' : '#6b7280'};
                 cursor: move;
-                font-size: 0.9em;
+                font-size: ${fontSize};
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                 z-index: 10;
+                font-weight: ${isSubNode ? 'normal' : 'bold'};
             `;
             node.textContent = nodeText;
             node.dataset.nodeId = nodeCounter;
+            node.dataset.parentId = parentId || '';
 
-            // Add drag functionality
+            // Add event listeners
             node.addEventListener('mousedown', startDrag);
+            node.addEventListener('contextmenu', showNodeContextMenu);
             
             canvas.appendChild(node);
-            mindMapNodes.push({ id: nodeCounter, element: node, text: nodeText });
+            
+            const nodeData = { 
+                id: nodeCounter, 
+                element: node, 
+                text: nodeText, 
+                parentId: parentId,
+                children: []
+            };
+            
+            mindMapNodes.push(nodeData);
+
+            // Update parent's children array
+            if (parentId) {
+                const parent = mindMapNodes.find(n => n.id === parentId);
+                if (parent) {
+                    parent.children.push(nodeCounter);
+                }
+            }
 
             // Clear input if it exists
             const input = document.getElementById('newNodeText');
@@ -1890,45 +2264,183 @@ III. Hydroelectric Power
                 input.value = '';
             }
 
-            // Draw line to center
-            drawLineToCenter(node);
+            // Draw line to parent or center
+            drawNodeConnections();
+            return nodeCounter;
         }
 
-        function drawLineToCenter(node) {
-            const canvas = document.getElementById('mindMapCanvas');
-            const centerNode = document.getElementById('centralTopic');
-            if (!canvas || !centerNode) return;
+        function showNodeContextMenu(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const nodeId = parseInt(e.target.dataset.nodeId);
+            const existingMenu = document.querySelector('.context-menu');
+            if (existingMenu) existingMenu.remove();
 
-            // Create SVG for the line
-            let svg = canvas.querySelector('svg');
-            if (!svg) {
-                svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                svg.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;';
-                canvas.appendChild(svg);
+            const menu = document.createElement('div');
+            menu.className = 'context-menu';
+            menu.style.cssText = `
+                position: fixed;
+                left: ${e.clientX}px;
+                top: ${e.clientY}px;
+                background: white;
+                border: 1px solid #d1d5db;
+                border-radius: 6px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 1000;
+                padding: 8px 0;
+                font-size: 0.9em;
+                min-width: 120px;
+            `;
+
+            const addSubNodeOption = document.createElement('div');
+            addSubNodeOption.style.cssText = `
+                padding: 8px 16px;
+                cursor: pointer;
+                color: #374151;
+                user-select: none;
+            `;
+            addSubNodeOption.textContent = '+ Add Sub-Node';
+            addSubNodeOption.addEventListener('mouseenter', () => {
+                addSubNodeOption.style.background = '#f3f4f6';
+            });
+            addSubNodeOption.addEventListener('mouseleave', () => {
+                addSubNodeOption.style.background = 'white';
+            });
+            addSubNodeOption.addEventListener('click', (clickEvent) => {
+                clickEvent.stopPropagation();
+                const text = prompt('Enter text for the sub-node:');
+                if (text && text.trim()) {
+                    addMindMapNode(text.trim(), null, null, nodeId);
+                }
+                menu.remove();
+            });
+
+            menu.appendChild(addSubNodeOption);
+
+            // Only add delete option for non-central nodes
+            if (nodeId !== 0) {
+                const deleteOption = document.createElement('div');
+                deleteOption.style.cssText = `
+                    padding: 8px 16px;
+                    cursor: pointer;
+                    color: #ef4444;
+                    border-top: 1px solid #e5e7eb;
+                    user-select: none;
+                `;
+                deleteOption.textContent = 'Delete Node';
+                deleteOption.addEventListener('mouseenter', () => {
+                    deleteOption.style.background = '#fef2f2';
+                });
+                deleteOption.addEventListener('mouseleave', () => {
+                    deleteOption.style.background = 'white';
+                });
+                deleteOption.addEventListener('click', (clickEvent) => {
+                    clickEvent.stopPropagation();
+                    deleteNode(nodeId);
+                    menu.remove();
+                });
+                menu.appendChild(deleteOption);
             }
 
-            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-            line.setAttribute('stroke', '#6b7280');
-            line.setAttribute('stroke-width', '2');
-            line.setAttribute('stroke-dasharray', '5,5');
+            document.body.appendChild(menu);
+
+            // Remove menu when clicking elsewhere
+            setTimeout(() => {
+                const removeMenu = (event) => {
+                    if (!menu.contains(event.target)) {
+                        menu.remove();
+                        document.removeEventListener('click', removeMenu);
+                    }
+                };
+                document.addEventListener('click', removeMenu);
+            }, 100);
+        }
+
+        function deleteNode(nodeId) {
+            const node = mindMapNodes.find(n => n.id === nodeId);
+            if (!node) return;
             
-            // Calculate positions
+            // Don't allow deleting the center node
+            if (node.element.id === 'centralTopic') return;
+            
+            // Remove all children first
+            const childrenToDelete = [...node.children];
+            childrenToDelete.forEach(childId => deleteNode(childId));
+            
+            // Remove from parent's children array
+            if (node.parentId) {
+                const parent = mindMapNodes.find(n => n.id === node.parentId);
+                if (parent) {
+                    parent.children = parent.children.filter(id => id !== nodeId);
+                }
+            }
+            
+            // Remove from DOM and data
+            node.element.remove();
+            mindMapNodes = mindMapNodes.filter(n => n.id !== nodeId);
+            
+            // Redraw connections
+            drawNodeConnections();
+        }
+
+        function drawNodeConnections() {
+            const canvas = document.getElementById('mindMapCanvas');
+            if (!canvas) return;
+
+            // Remove existing SVG
+            const existingSvg = canvas.querySelector('svg');
+            if (existingSvg) existingSvg.remove();
+
+            // Create new SVG
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;';
+            canvas.appendChild(svg);
+
             const canvasRect = canvas.getBoundingClientRect();
-            const centerRect = centerNode.getBoundingClientRect();
-            const nodeRect = node.getBoundingClientRect();
-            
-            const centerX = (centerRect.left + centerRect.width/2 - canvasRect.left);
-            const centerY = (centerRect.top + centerRect.height/2 - canvasRect.top);
-            const nodeX = (nodeRect.left + nodeRect.width/2 - canvasRect.left);
-            const nodeY = (nodeRect.top + nodeRect.height/2 - canvasRect.top);
+            const centerNode = document.getElementById('centralTopic');
 
-            line.setAttribute('x1', centerX);
-            line.setAttribute('y1', centerY);
-            line.setAttribute('x2', nodeX);
-            line.setAttribute('y2', nodeY);
-            line.dataset.nodeId = node.dataset.nodeId;
+            mindMapNodes.forEach(node => {
+                if (node.element === centerNode) return;
 
-            svg.appendChild(line);
+                const nodeRect = node.element.getBoundingClientRect();
+                let targetNode, targetRect;
+
+                if (node.parentId) {
+                    // Connect to parent node
+                    const parent = mindMapNodes.find(n => n.id === node.parentId);
+                    if (parent) {
+                        targetNode = parent.element;
+                        targetRect = targetNode.getBoundingClientRect();
+                    }
+                } else {
+                    // Connect to center
+                    targetNode = centerNode;
+                    targetRect = centerNode.getBoundingClientRect();
+                }
+
+                if (!targetRect) return;
+
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                const isSubNode = node.parentId !== null;
+                
+                line.setAttribute('stroke', isSubNode ? '#9ca3af' : '#6b7280');
+                line.setAttribute('stroke-width', isSubNode ? '1.5' : '2');
+                line.setAttribute('stroke-dasharray', isSubNode ? '3,3' : '5,5');
+                
+                const targetX = (targetRect.left + targetRect.width/2 - canvasRect.left);
+                const targetY = (targetRect.top + targetRect.height/2 - canvasRect.top);
+                const nodeX = (nodeRect.left + nodeRect.width/2 - canvasRect.left);
+                const nodeY = (nodeRect.top + nodeRect.height/2 - canvasRect.top);
+
+                line.setAttribute('x1', targetX);
+                line.setAttribute('y1', targetY);
+                line.setAttribute('x2', nodeX);
+                line.setAttribute('y2', nodeY);
+                line.dataset.nodeId = node.id;
+
+                svg.appendChild(line);
+            });
         }
 
         function startDrag(e) {
@@ -1960,8 +2472,8 @@ III. Hydroelectric Power
             currentDragNode.style.left = boundedX + '%';
             currentDragNode.style.top = boundedY + '%';
             
-            // Update line
-            updateNodeLine(currentDragNode);
+            // Update connections
+            drawNodeConnections();
         }
 
         function stopDrag() {
@@ -1969,30 +2481,6 @@ III. Hydroelectric Power
             currentDragNode = null;
             document.removeEventListener('mousemove', drag);
             document.removeEventListener('mouseup', stopDrag);
-        }
-
-        function updateNodeLine(node) {
-            const canvas = document.getElementById('mindMapCanvas');
-            const svg = canvas.querySelector('svg');
-            if (!svg) return;
-
-            const line = svg.querySelector(`line[data-node-id="${node.dataset.nodeId}"]`);
-            if (!line) return;
-
-            const centerNode = document.getElementById('centralTopic');
-            const canvasRect = canvas.getBoundingClientRect();
-            const centerRect = centerNode.getBoundingClientRect();
-            const nodeRect = node.getBoundingClientRect();
-            
-            const centerX = (centerRect.left + centerRect.width/2 - canvasRect.left);
-            const centerY = (centerRect.top + centerRect.height/2 - canvasRect.top);
-            const nodeX = (nodeRect.left + nodeRect.width/2 - canvasRect.left);
-            const nodeY = (nodeRect.top + nodeRect.height/2 - canvasRect.top);
-
-            line.setAttribute('x1', centerX);
-            line.setAttribute('y1', centerY);
-            line.setAttribute('x2', nodeX);
-            line.setAttribute('y2', nodeY);
         }
 
         function clearMindMap() {
@@ -2011,10 +2499,84 @@ III. Hydroelectric Power
             nodeCounter = 0;
         }
 
-        function backToExplore() {
-            hideAllSections();
-            document.querySelector('.explore-section').style.display = 'block';
-            document.querySelector('.explore-section').classList.add('active');
+        function setupSketchingCanvas() {
+            const canvas = document.getElementById('sketchCanvas');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+            let lastX = 0;
+            let lastY = 0;
+
+            // Set up canvas
+            ctx.strokeStyle = '#333333';
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            // Set white background
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            function startDrawing(e) {
+                isDrawing = true;
+                const rect = canvas.getBoundingClientRect();
+                lastX = e.clientX - rect.left;
+                lastY = e.clientY - rect.top;
+            }
+
+            function draw(e) {
+                if (!isDrawing) return;
+                
+                const rect = canvas.getBoundingClientRect();
+                const currentX = e.clientX - rect.left;
+                const currentY = e.clientY - rect.top;
+
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(currentX, currentY);
+                ctx.stroke();
+
+                lastX = currentX;
+                lastY = currentY;
+            }
+
+            function stopDrawing() {
+                isDrawing = false;
+            }
+
+            // Mouse events
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+
+            // Touch events for mobile
+            canvas.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousedown', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            });
+
+            canvas.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousemove', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            });
+
+            canvas.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                const mouseEvent = new MouseEvent('mouseup', {});
+                canvas.dispatchEvent(mouseEvent);
+            });
         }
 
         // Initialize the application
